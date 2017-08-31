@@ -1,5 +1,11 @@
 require 'bundler/setup'
-require 'hypo'
+require 'simplecov'
+
+SimpleCov.start do
+  add_filter "/spec/"
+end
+
+require_relative '../lib/hypo'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

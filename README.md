@@ -1,5 +1,5 @@
 # Hypo
-Hypo is sinless general purpose IoC container.
+Hypo is sinless general purpose IoC container for Ruby applications.
 
 ## Installation
 

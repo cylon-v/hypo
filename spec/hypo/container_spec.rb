@@ -42,5 +42,50 @@ RSpec.describe Hypo::Container do
             .to raise_error(Hypo::ContainerError, 'Component with name "some_unknown_name" is not registered')
       end
     end
+
+    context 'when resolving type has registered dependencies' do
+      class TestType2
+      end
+
+      class TestTypeWithDependencies
+        attr_reader :dependency_1, :dependency_2
+
+        def initialize(test_type, test_type2)
+          @dependency_1 = test_type
+          @dependency_2 = test_type2
+        end
+      end
+
+
+      before :each do
+        @container.register(TestTypeWithDependencies)
+        @container.register(TestType2)
+      end
+
+      it 'resolves instance with injected dependencies' do
+        instance = @container.resolve(:test_type_with_dependencies)
+        expect(instance.dependency_1).to be_instance_of(TestType)
+        expect(instance.dependency_2).to be_instance_of(TestType2)
+      end
+    end
+
+    context 'when resolving type has unknown dependency' do
+      class TestTypeWithUnknownDependency
+        attr_reader :dependency
+
+        def initialize(unknown_test_type)
+          @dependency = unknown_test_type
+        end
+      end
+
+      before :each do
+        @container.register(TestTypeWithUnknownDependency)
+      end
+
+      it 'raises ContainerError with specific message' do
+        expect {@container.resolve(:test_type_with_unknown_dependency)}
+          .to raise_error(Hypo::ContainerError, 'Component with name "unknown_test_type" is not registered')
+      end
+    end
   end
 end
