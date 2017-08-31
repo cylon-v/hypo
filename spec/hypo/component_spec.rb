@@ -20,5 +20,15 @@ RSpec.describe Hypo::Component do
       component = Hypo::Component.new(TestType2, @container)
       expect(component.name).to eql :test_type2
     end
+
+    it 'correctly initialize name of type with modules' do
+      module TestModule
+        class TestClass
+        end
+      end
+
+      component = Hypo::Component.new(TestModule::TestClass, @container)
+      expect(component.name).to eql :test_module_test_class
+    end
   end
 end

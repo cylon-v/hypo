@@ -4,7 +4,7 @@ module Hypo
 
     def initialize(type, container)
       @type = type
-      @name = type.name.gsub(/(.)([A-Z](?=[a-z]))/,'\1_\2').downcase.to_sym
+      @name = type.name.gsub(/(.)([A-Z](?=[a-z]))/,'\1_\2').delete('::').downcase.to_sym
       @container = container
     end
 
