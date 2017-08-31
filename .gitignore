@@ -11,7 +11,7 @@
 # rspec failure tracking
 .rspec_status
 .idea
-.gem
+*.gem
 .ruby-version
 .ruby-gemset
 coverage
