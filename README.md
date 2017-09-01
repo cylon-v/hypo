@@ -18,7 +18,39 @@ Or install it yourself as:
     $ gem install hypo
 
 ## Usage
+First of all you need to create an instance of Hypo::Container.
+```ruby
+  container = Hypo::Container.new
+```
+Then you can register your types (classes) there:
+```ruby
+  container.register(User)
+```
+..and resolve them:
+```ruby
+  container.resolve(:user)
+```
+Registered types can have some dependencies that will be resolved automatically if they're registered in the container. For example, you have classes:
 
+```ruby
+class User
+  attr_reader :company
+  def initialize(company)
+    @company = company
+  end
+end
+
+class Company
+end
+```
+
+and if you registered both of them, you can do:
+
+```ruby
+  user = container.resolve(:user)
+  
+  # user.company is resolved as well
+```
 
 ## Development
 
