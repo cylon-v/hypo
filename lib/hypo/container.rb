@@ -7,8 +7,8 @@ module Hypo
       @components = {}
     end
 
-    def register(type)
-      component = Component.new(type, self)
+    def register(type, name = nil)
+      component = Component.new(type, self, name)
       if @components.key?(component.name)
         raise ContainerError, "Component of type \"#{component.type.to_s}\" has already been registered"
       end

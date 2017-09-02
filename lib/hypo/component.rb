@@ -2,9 +2,9 @@ module Hypo
   class Component
     attr_reader :name, :type
 
-    def initialize(type, container)
+    def initialize(type, container, name = nil)
       @type = type
-      @name = type.name.gsub(/(.)([A-Z](?=[a-z]))/,'\1_\2').delete('::').downcase.to_sym
+      @name = name || type.name.gsub(/(.)([A-Z](?=[a-z]))/,'\1_\2').delete('::').downcase.to_sym
       @container = container
     end
 
