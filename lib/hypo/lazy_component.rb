@@ -1,5 +1,5 @@
 module Hypo
-  class Component
+  class LazyComponent
     attr_reader :name, :type
 
     def initialize(type, container, name = nil)

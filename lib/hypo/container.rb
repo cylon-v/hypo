@@ -1,5 +1,6 @@
 require 'hypo/container_error'
-require 'hypo/component'
+require 'hypo/lazy_component'
+require 'hypo/simple_component'
 
 module Hypo
   class Container
@@ -7,8 +8,10 @@ module Hypo
       @components = {}
     end
 
-    def register(type, name = nil)
-      component = Component.new(type, self, name)
+    def register(item, name = nil)
+      type = item.is_a?(Class) ? LazyComponent : SimpleComponent
+      component = type.new(item, self, name)
+
       if @components.key?(component.name)
         raise ContainerError, "Component of type \"#{component.type.to_s}\" has already been registered"
       end

@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'hypo/component'
+require 'hypo/lazy_component'
 require 'hypo/container'
 
-RSpec.describe Hypo::Component do
+RSpec.describe Hypo::LazyComponent do
   before :all do
     @container = Hypo::Container.new
   end
@@ -10,7 +10,7 @@ RSpec.describe Hypo::Component do
   describe 'initialize' do
     context 'when name is not specified' do
       it 'correctly initialize simple name' do
-        component = Hypo::Component.new(TestType, @container)
+        component = Hypo::LazyComponent.new(TestType, @container)
         expect(component.name).to eql :test_type
       end
 
@@ -18,7 +18,7 @@ RSpec.describe Hypo::Component do
         class TestType2
         end
 
-        component = Hypo::Component.new(TestType2, @container)
+        component = Hypo::LazyComponent.new(TestType2, @container)
         expect(component.name).to eql :test_type2
       end
 
@@ -28,14 +28,14 @@ RSpec.describe Hypo::Component do
           end
         end
 
-        component = Hypo::Component.new(TestModule::TestClass, @container)
+        component = Hypo::LazyComponent.new(TestModule::TestClass, @container)
         expect(component.name).to eql :test_module_test_class
       end
     end
 
     context 'when name is specified' do
       it 'uses specified name instead of creating it using type name' do
-        component = Hypo::Component.new(TestType, @container, :my_own_name)
+        component = Hypo::LazyComponent.new(TestType, @container, :my_own_name)
         expect(component.name).to eql :my_own_name
       end
     end
