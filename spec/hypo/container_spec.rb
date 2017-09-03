@@ -47,9 +47,9 @@ RSpec.describe Hypo::Container do
         @container.register(TestType, :test_type_one)
       end
 
-      it 'does not raise ContainerError' do
+      it 'does not raise an error' do
         expect {@container.register(TestType, :test_type_two)}
-          .not_to raise_error(Hypo::ContainerError)
+          .not_to raise_error
       end
     end
 
@@ -79,14 +79,6 @@ RSpec.describe Hypo::Container do
       @container.register(TestType)
     end
 
-    context 'twice' do
-      it 'resolves exactly the same instance' do
-        instance1 = @container.resolve(:test_type)
-        instance2 = @container.resolve(:test_type)
-        expect(instance1).to equal instance2
-      end
-    end
-
     context 'when requested component is not registered' do
       it 'raises ContainerError with specific message' do
         expect {@container.resolve(:some_unknown_name)}
@@ -99,11 +91,11 @@ RSpec.describe Hypo::Container do
       end
 
       class TestTypeWithDependencies
-        attr_reader :dependency_1, :dependency_2
+        attr_reader :dependency1, :dependency2
 
         def initialize(test_type, test_type2)
-          @dependency_1 = test_type
-          @dependency_2 = test_type2
+          @dependency1 = test_type
+          @dependency2 = test_type2
         end
       end
 
@@ -115,8 +107,8 @@ RSpec.describe Hypo::Container do
 
       it 'resolves instance with injected dependencies' do
         instance = @container.resolve(:test_type_with_dependencies)
-        expect(instance.dependency_1).to be_instance_of(TestType)
-        expect(instance.dependency_2).to be_instance_of(TestType2)
+        expect(instance.dependency1).to be_instance_of(TestType)
+        expect(instance.dependency2).to be_instance_of(TestType2)
       end
     end
 

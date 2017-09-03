@@ -1,6 +1,6 @@
 require 'hypo/container_error'
-require 'hypo/lazy_component'
-require 'hypo/simple_component'
+require 'hypo/component'
+require 'hypo/instance'
 
 module Hypo
   class Container
@@ -9,7 +9,7 @@ module Hypo
     end
 
     def register(item, name = nil)
-      type = item.is_a?(Class) ? LazyComponent : SimpleComponent
+      type = item.is_a?(Class) ? Component : Instance
       component = type.new(item, self, name)
 
       if @components.key?(component.name)
