@@ -17,13 +17,13 @@ module Hypo
     end
 
     def dependencies
-      @type.instance_method(:initialize).parameters.map {|p| @container.resolve(p[1])}
+      @type.instance_method(:initialize).parameters.map { |p| @container.resolve(p[1]) }
     end
 
     def use_lifestyle(lifestyle)
       @lifestyle = lifestyle
     end
 
-    alias :using_lifestyle :use_lifestyle
+    alias using_lifestyle use_lifestyle
   end
 end

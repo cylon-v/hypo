@@ -43,13 +43,21 @@ RSpec.describe Hypo::Component do
     end
   end
 
-  describe 'using_lifestyle' do
+  describe 'use_lifestyle' do
     it 'sets requested lifestyle' do
       component = Hypo::Component.new(TestType, @container)
 
       expect(component.lifestyle).to be_an_instance_of Hypo::Transient
       component.use_lifestyle(Hypo::Singleton.new(component))
       expect(component.lifestyle).to be_an_instance_of Hypo::Singleton
+    end
+  end
+
+  describe 'using_lifestyle' do
+    it 'is equal to use_lifestyle' do
+      component = Hypo::Component.new(TestType, @container)
+      expect(component.method(:using_lifestyle))
+        .to eq(component.method(:use_lifestyle))
     end
   end
 end
