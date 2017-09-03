@@ -71,6 +71,12 @@ RSpec.describe Hypo::Container do
         expect(instance).to be_a TestType
       end
     end
+
+    it 'returns registered component' do
+      container = Hypo::Container.new
+      component = container.register(TestType)
+      expect(component).to be_a Hypo::Component
+    end
   end
 
   describe 'resolve' do

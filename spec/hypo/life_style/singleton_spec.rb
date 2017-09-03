@@ -12,7 +12,7 @@ RSpec.describe Hypo::Singleton do
 
   describe 'instance' do
     it 'returns component instance' do
-      expect(@lifestyle.instance).to be_an_instance_of TestType
+      expect(@lifestyle.instance).to be_a TestType
     end
 
     describe 'called twice' do
