@@ -21,7 +21,7 @@ module Hypo
     end
 
     def use_lifestyle(lifestyle)
-      @lifestyle = lifestyle
+      @lifestyle = lifestyle.new(self)
     end
 
     alias using_lifestyle use_lifestyle

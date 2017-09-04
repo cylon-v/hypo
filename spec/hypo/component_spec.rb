@@ -48,7 +48,7 @@ RSpec.describe Hypo::Component do
       component = Hypo::Component.new(TestType, @container)
 
       expect(component.lifestyle).to be_an_instance_of Hypo::Transient
-      component.use_lifestyle(Hypo::Singleton.new(component))
+      component.use_lifestyle(Hypo::Singleton)
       expect(component.lifestyle).to be_an_instance_of Hypo::Singleton
     end
   end
