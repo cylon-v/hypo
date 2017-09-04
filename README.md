@@ -17,7 +17,8 @@ Or install it yourself as:
 
     $ gem install hypo
 
-## Usage
+## Getting Started
+
 First of all you need to create an instance of Hypo::Container.
 ```ruby
   container = Hypo::Container.new
@@ -51,6 +52,18 @@ and if you registered both of them, you can do:
   
   # user.company is resolved as well
 ```
+
+## Component Lifetime
+By default all registered components have lifestyle Hypo::Transient. 
+It means, every time when you resolve a component Hypo returns new instance of its type.
+If you wanna change this behavior then you can replace lifetime strategy. 
+Out of the box Hypo provides Hypo::Singleton strategy, you can use it when register a component:
+
+```ruby
+container.register(User).using_lifestyle(Hypo::Singleton)
+``` 
+Actually you can implement you own lifestyle, 
+i.e. makes sense to think about HttpRequest strategy for your web applications.
 
 ## Development
 
