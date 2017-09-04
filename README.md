@@ -77,16 +77,16 @@ container.register(connection, :connection)
 ``` 
 You must specify component name as it's done in example above.
 
-## Component Lifetime
-By default all registered components have lifestyle Hypo::Transient. 
+## Component Life Cycle
+By default all registered components have life cycle Hypo::Transient. 
 It means, every time when you resolve a component Hypo returns new instance of its type.
 If you wanna change this behavior then you can replace lifetime strategy. 
 Out of the box Hypo provides Hypo::Singleton strategy, you can use it when register a component:
 
 ```ruby
-container.register(User).using_lifestyle(Hypo::Singleton)
+container.register(User).using_life_cycle(Hypo::Singleton)
 ``` 
-Actually you can implement you own lifestyle, 
+Actually you can implement you own life cycle, 
 i.e. makes sense to think about HttpRequest strategy for your web applications.
 
 ## Development

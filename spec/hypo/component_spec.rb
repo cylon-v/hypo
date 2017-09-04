@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'hypo/component'
 require 'hypo/container'
-require 'hypo/lifestyles/singleton'
-require 'hypo/lifestyles/transient'
+require 'hypo/life_cycle/singleton'
+require 'hypo/life_cycle/transient'
 
 RSpec.describe Hypo::Component do
   before :all do
@@ -43,21 +43,21 @@ RSpec.describe Hypo::Component do
     end
   end
 
-  describe 'use_lifestyle' do
-    it 'sets requested lifestyle' do
+  describe 'use_life_cycle' do
+    it 'sets requested life cycle' do
       component = Hypo::Component.new(TestType, @container)
 
-      expect(component.lifestyle).to be_an_instance_of Hypo::Transient
-      component.use_lifestyle(Hypo::Singleton)
-      expect(component.lifestyle).to be_an_instance_of Hypo::Singleton
+      expect(component.life_cycle).to be_an_instance_of Hypo::Transient
+      component.use_life_cycle(Hypo::Singleton)
+      expect(component.life_cycle).to be_an_instance_of Hypo::Singleton
     end
   end
 
-  describe 'using_lifestyle' do
-    it 'is equal to use_lifestyle' do
+  describe 'using_life_cycle' do
+    it 'is equal to use_life_cycle' do
       component = Hypo::Component.new(TestType, @container)
-      expect(component.method(:using_lifestyle))
-        .to eq(component.method(:use_lifestyle))
+      expect(component.method(:using_life_cycle))
+        .to eq(component.method(:use_life_cycle))
     end
   end
 end
