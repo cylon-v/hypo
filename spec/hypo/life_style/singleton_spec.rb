@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'hypo/component'
-require 'hypo/life_style/singleton'
+require 'hypo/lifestyles/singleton'
 require 'stubs/test_type'
 
 RSpec.describe Hypo::Singleton do

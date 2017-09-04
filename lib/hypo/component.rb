@@ -1,4 +1,4 @@
-require 'hypo/life_style/transient'
+require 'hypo/lifestyles/transient'
 
 module Hypo
   class Component
