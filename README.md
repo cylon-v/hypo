@@ -21,16 +21,25 @@ Or install it yourself as:
 
 First of all you need to create an instance of Hypo::Container.
 ```ruby
-  container = Hypo::Container.new
+container = Hypo::Container.new
 ```
 Then you can register your types (classes) there:
 ```ruby
-  container.register(User)
+container.register(User)
 ```
 ..and resolve them:
 ```ruby
-  container.resolve(:user)
+container.resolve(:user)
 ```
+Optionally you can specify custom name for your component:
+```ruby
+container.register(User, :my_dear_user)
+```
+and then you can resolve the component as :my_dear_user:
+```ruby
+container.resolve(:my_dear_user)
+```
+
 Registered types can have some dependencies that will be resolved automatically if they're registered in the container. For example, you have classes:
 
 ```ruby
@@ -52,6 +61,21 @@ and if you registered both of them, you can do:
   
   # user.company is resolved as well
 ```
+
+Sometimes you're not able to manage a type lifecycle, i.e. when you use 3rd-party static stuff, like:
+```ruby
+class DB
+  def connect
+    # ...
+  end
+end
+```
+In that case you can register an instance instead of a type:
+```ruby
+connection = DB.connect
+container.register(connection, :connection)    
+``` 
+You must specify component name as it's done in example above.
 
 ## Component Lifetime
 By default all registered components have lifestyle Hypo::Transient. 
