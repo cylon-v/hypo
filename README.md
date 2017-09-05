@@ -65,7 +65,7 @@ and if you registered both of them, you can do:
 Sometimes you're not able to manage a type lifecycle, i.e. when you use 3rd-party static stuff, like:
 ```ruby
 class DB
-  def connect
+  def self.connect
     # ...
   end
 end
@@ -86,7 +86,7 @@ Out of the box Hypo provides Hypo::Singleton strategy, you can use it when regis
 ```ruby
 container.register(User).using_life_cycle(Hypo::Singleton)
 ``` 
-Actually you can implement you own life cycle, 
+Actually you can implement your own life cycle, 
 i.e. makes sense to think about HttpRequest strategy for your web applications.
 
 ## Development
