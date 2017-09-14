@@ -1,6 +1,10 @@
+require 'hypo/chainable'
+
 module Hypo
   class Instance
-    attr_reader :name
+    include Chainable
+
+    attr_reader :name, :container
 
     def initialize(object, container, name)
       raise ContainerError, 'Registered object should have a name' if name.nil?

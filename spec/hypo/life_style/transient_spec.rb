@@ -15,7 +15,7 @@ RSpec.describe Hypo::Transient do
       expect(@life_cycle.instance).to be_a TestType
     end
 
-    describe 'called twice' do
+    context 'called twice' do
       it 'every time returns new instance' do
         instance1 = @life_cycle.instance
         instance2 = @life_cycle.instance

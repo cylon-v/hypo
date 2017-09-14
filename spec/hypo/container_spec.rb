@@ -77,6 +77,26 @@ RSpec.describe Hypo::Container do
       component = container.register(TestType)
       expect(component).to be_a Hypo::Component
     end
+
+    it 'should be chainable for component' do
+      class TestChain; end
+
+      container = Hypo::Container.new
+      component = container.register(TestType)
+        .register(TestChain)
+
+      expect(component).to be_a Hypo::Component
+    end
+
+    it 'should be chainable for instance' do
+      class TestChain; end
+
+      container = Hypo::Container.new
+      component = container.register(Object.new, :chainable_instance)
+                      .register(TestChain)
+
+      expect(component).to be_a Hypo::Component
+    end
   end
 
   describe 'resolve' do
