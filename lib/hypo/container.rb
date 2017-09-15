@@ -6,6 +6,7 @@ module Hypo
   class Container
     def initialize
       @components = {}
+      register self, :container
     end
 
     def register(item, name = nil)
