@@ -157,4 +157,11 @@ RSpec.describe Hypo::Container do
       end
     end
   end
+
+  describe 'initialize' do
+    it 'registers itself' do
+      container = Hypo::Container.new
+      expect(container.resolve(:container)).to be_a Hypo::Container
+    end
+  end
 end
