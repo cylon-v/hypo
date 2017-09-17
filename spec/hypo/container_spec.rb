@@ -35,7 +35,7 @@ RSpec.describe Hypo::Container do
       end
 
       it 'raises ContainerError with specific message' do
-        message = 'Component of type "TestType" has already been registered'
+        message = 'Component "test_type" has already been registered'
         expect {@container.register(TestType)}
           .to raise_error(Hypo::ContainerError, message)
       end

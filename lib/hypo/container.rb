@@ -1,6 +1,8 @@
 require 'hypo/container_error'
 require 'hypo/component'
 require 'hypo/instance'
+require 'hypo/life_cycle/transient'
+require 'hypo/life_cycle/singleton'
 
 module Hypo
   class Container
@@ -19,7 +21,7 @@ module Hypo
       component = type.new(item, self, name)
 
       if @components.key?(component.name)
-        raise ContainerError, "Component of type \"#{component.type.to_s}\" has already been registered"
+        raise ContainerError, "Component \"#{component.name}\" has already been registered"
       end
 
       @components[component.name] = component
@@ -31,6 +33,10 @@ module Hypo
       end
 
       @components[name].instance
+    end
+
+    def remove(name)
+      @components.delete(name)
     end
 
     def add_life_cycle(life_cycle, name)
