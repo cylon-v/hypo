@@ -1,6 +1,5 @@
 require 'hypo/life_cycle/transient'
 require 'hypo/chainable'
-require 'hypo/extensions/string'
 
 module Hypo
   class Component
