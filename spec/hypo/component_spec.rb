@@ -47,9 +47,9 @@ RSpec.describe Hypo::Component do
     it 'sets requested life cycle' do
       component = Hypo::Component.new(TestType, @container)
 
-      expect(component.life_cycle).to be_an_instance_of Hypo::Transient
-      component.use_life_cycle(Hypo::Singleton)
-      expect(component.life_cycle).to be_an_instance_of Hypo::Singleton
+      expect(component.life_cycle).to be_an_instance_of Hypo::LifeCycle::Transient
+      component.use_life_cycle(:singleton)
+      expect(component.life_cycle).to be_an_instance_of Hypo::LifeCycle::Singleton
     end
   end
 

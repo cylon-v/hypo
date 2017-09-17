@@ -1,5 +1,6 @@
 require 'hypo/life_cycle/transient'
 require 'hypo/chainable'
+require 'hypo/extensions/string'
 
 module Hypo
   class Component
@@ -11,12 +12,12 @@ module Hypo
       @container = container
       @type = type
       @name = name || type.name.gsub(/(.)([A-Z](?=[a-z]))/, '\1_\2').delete('::').downcase.to_sym
-      @life_cycle = Transient.new(self)
+      @life_cycle = container.life_cycles[:transient]
       @dependency_names = @type.instance_method(:initialize).parameters.map {|p| p[1]}
     end
 
     def instance
-      instance = @life_cycle.instance
+      instance = @life_cycle.instance(self)
 
       @dependency_names.each do |dependency|
         instance.instance_variable_set "@#{dependency}".to_sym, @container.resolve(dependency)
@@ -30,7 +31,7 @@ module Hypo
     end
 
     def use_life_cycle(life_cycle)
-      @life_cycle = life_cycle.new(self)
+      @life_cycle = container.life_cycles[life_cycle]
 
       self
     end

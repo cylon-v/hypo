@@ -1,12 +1,17 @@
 module Hypo
-  class Singleton
-    def initialize(component)
-      @component = component
-    end
+  module LifeCycle
+    class Singleton
+      def initialize
+        @instances = {}
+      end
 
-    def instance
-      @instance = @component.type.new(*@component.dependencies) if @instance.nil?
-      @instance
+      def instance(component)
+        unless @instances.key? component.name
+          @instances[component.name] = component.type.new(*component.dependencies)
+        end
+
+        @instances[component.name]
+      end
     end
   end
 end

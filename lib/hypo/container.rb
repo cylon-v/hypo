@@ -1,11 +1,17 @@
 require 'hypo/container_error'
 require 'hypo/component'
 require 'hypo/instance'
+require 'hypo/extensions/string'
 
 module Hypo
   class Container
+    attr_reader :life_cycles
+
     def initialize
       @components = {}
+      @life_cycles = {}
+      add_life_cycle(LifeCycle::Transient, :transient)
+      add_life_cycle(LifeCycle::Singleton, :singleton)
       register self, :container
     end
 
@@ -26,6 +32,12 @@ module Hypo
       end
 
       @components[name].instance
+    end
+
+    def add_life_cycle(life_cycle, name)
+      @life_cycles[name] = life_cycle.new
+
+      self
     end
   end
 end

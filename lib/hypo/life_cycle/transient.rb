@@ -1,11 +1,9 @@
 module Hypo
-  class Transient
-    def initialize(component)
-      @component = component
-    end
-
-    def instance
-      @component.type.new(*@component.dependencies)
+  module LifeCycle
+    class Transient
+      def instance(component)
+        component.type.new(*component.dependencies)
+      end
     end
   end
 end
