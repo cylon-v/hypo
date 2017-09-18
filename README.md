@@ -120,6 +120,7 @@ end
 container.register(A, :type_a).using_life_cycle(:transient)
 container.register(B, :type_b).using_life_cycle(:singleton)
 
+container.resolve(:type_b)
 ```
 
 According to :transient strategy every time when you try to resolve a singleton 
