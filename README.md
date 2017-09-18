@@ -76,16 +76,41 @@ connection = DB.connect
 container.register_instance(connection, :connection)    
 ``` 
 ## Component Life Cycle
-By default all registered components have life cycle Hypo::Transient (:transient). 
+By default all registered components have life cycle Hypo::LifeCycle::Transient (:transient). 
 It means, every time when you resolve a component Hypo returns new instance of its type.
 If you wanna change this behavior then you can replace lifetime strategy. 
-Out of the box Hypo provides Hypo::Singleton (:singleton) strategy, you can use it when register a component:
+Out of the box Hypo provides Hypo::LifeCycle::Singleton (:singleton) strategy, you can use it when register a component:
 
 ```ruby
 container.register(User).using_life_cycle(:singleton)
 ``` 
+
 Actually you can implement your own life cycle, 
-i.e. makes sense to think about HttpRequest strategy for your web applications.
+i.e. makes sense to think about HttpRequest strategy for your web applications. You can do that using "add_life_cycle" method:
+
+```ruby
+# somewhere in Rack application: application initialization
+life_cycle = LifeCycle::Request.new
+container.add_life_cycle(life_cycle, :request)
+```
+
+A class of new life cycle must respond to "instance" method. This method just a factory method which creates new instance according to your strategy. For example, LifeCycle::Request could cache instanes of a components during http request lifespan. Take a look to [:singleton implementation](https://github.com/cylon-v/hypo/blob/master/lib/hypo/life_cycle/singleton.rb). You can manually purge internal state of components registry according your strategy. In case of http-request life cycle you could clean up it right after request has done:
+
+```ruby
+# somewhere in Rack application: application initialization
+# ...
+container.register(SQLTransation, :transaction)
+```
+
+```ruby
+# somewhere in Rack application: request handling
+container.register_instance(query_string, :query_string)
+
+# handle the request
+# ...
+
+life_cycle.purge
+```
 
 **Instances support only :singleton life cycle.** 
 
@@ -93,12 +118,13 @@ Sometimes you need to manage a component life cycle manually. Especially it can 
 For example, you're going to inject new instance of request parameters every http request in your web application:
 
 ```ruby
-# somewhere in Rack application
+# somewhere in Rack application: request handling
 # ...
 query_string = env['QUERY_STRING']
 container.register_instance(query_string, :query_string)
 
 # handle the request
+# ...
 
 container.remove(:query_string)
 # ...
