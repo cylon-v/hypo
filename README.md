@@ -73,10 +73,8 @@ end
 In that case you can register an instance instead of a type:
 ```ruby
 connection = DB.connect
-container.register(connection, :connection)    
+container.register_instance(connection, :connection)    
 ``` 
-You must specify component name as it's done in example above.
-
 ## Component Life Cycle
 By default all registered components have life cycle Hypo::Transient (:transient). 
 It means, every time when you resolve a component Hypo returns new instance of its type.
@@ -88,6 +86,44 @@ container.register(User).using_life_cycle(:singleton)
 ``` 
 Actually you can implement your own life cycle, 
 i.e. makes sense to think about HttpRequest strategy for your web applications.
+
+**Instances support only :singleton life cycle.** 
+
+Sometimes you need to manage a component life cycle manually. Especially it can be useful for "instances".
+For example, you're going to inject new instance of request parameters every http request in your web application:
+
+```ruby
+# somewhere in Rack application
+# ...
+query_string = env['QUERY_STRING']
+container.register_instance(query_string, :query_string)
+
+# handle the request
+
+container.remove(:query_string)
+# ...
+```
+
+Hypo resolves components with different life cycle strategies independently. 
+In other words you can inject a dependency with less lifespan than acceptor type. I.e.:
+
+```ruby
+class A; end
+
+class B
+  def initialize(type_a)
+    @type_a = type_a
+  end
+end
+
+
+container.register(A, :type_a).using_life_cycle(:transient)
+container.register(B, :type_b).using_life_cycle(:singleton)
+
+```
+
+According to :transient strategy every time when you try to resolve a singleton 
+you retrieve exactly the same instance of the singleton **but with new instance** of transient dependency.    
 
 ## Development
 

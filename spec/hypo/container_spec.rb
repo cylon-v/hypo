@@ -54,21 +54,14 @@ RSpec.describe Hypo::Container do
     end
 
     context 'when register component as instance of an object' do
-      before :each do
+      it 'raises an exception with specific message' do
         @container = Hypo::Container.new
-      end
 
-      context 'when name is not specified' do
-        it 'should raise ContainerError with specific message' do
-          expect {@container.register(TestType.new)}
-            .to raise_error(Hypo::ContainerError, 'Registered object should have a name')
-        end
-      end
+        message = 'Using method "register" you can register only a type. ' \
+          'If you wanna register an instance please use method "register_instance".'
 
-      it 'registers component and can resolve it by type name' do
-        @container.register(TestType.new, :my_object)
-        instance = @container.resolve(:my_object)
-        expect(instance).to be_a TestType
+        expect {@container.register(TestType.new)}
+          .to raise_error(Hypo::ContainerError, message)
       end
     end
 
@@ -87,15 +80,45 @@ RSpec.describe Hypo::Container do
 
       expect(component).to be_a Hypo::Component
     end
+  end
 
-    it 'should be chainable for instance' do
-      class TestChain; end
+  describe 'register_instance' do
+    before :each do
+      @container = Hypo::Container.new
+    end
 
-      container = Hypo::Container.new
-      component = container.register(Object.new, :chainable_instance)
-                      .register(TestChain)
+    context 'when instance has not been registered' do
+      it 'registers component and can resolve it by name' do
+        @container.register_instance(TestType.new, :my_object)
+        instance = @container.resolve(:my_object)
+        expect(instance).to be_a TestType
+      end
+    end
 
-      expect(component).to be_a Hypo::Component
+
+    context 'when component has already been registered' do
+      before :each do
+        @container = Hypo::Container.new
+        @container.register_instance(TestType.new, :my_object)
+      end
+
+      it 'raises ContainerError with specific message' do
+        message = 'Component "my_object" has already been registered'
+        expect {@container.register_instance(TestType.new, :my_object)}
+          .to raise_error(Hypo::ContainerError, message)
+      end
+    end
+
+    context 'by passing a class instead of an instance' do
+      it 'raises an exception with specific message' do
+        @container = Hypo::Container.new
+
+        message = 'Using method "register_instance" you can register only an instance. ' \
+          'If you wanna register a type please use method "register".'
+
+        expect {@container.register_instance(TestType, :my_type)}
+          .to raise_error(Hypo::ContainerError, message)
+      end
     end
   end
 
@@ -162,6 +185,30 @@ RSpec.describe Hypo::Container do
     it 'registers itself' do
       container = Hypo::Container.new
       expect(container.resolve(:container)).to be_a Hypo::Container
+    end
+  end
+
+  describe 'remove' do
+    context 'an instance' do
+      it 'removes component from container by name' do
+        container = Hypo::Container.new
+        container.register_instance(TestType.new, :instance)
+        container.remove(:instance)
+
+        expect {container.resolve(:instance)}
+          .to raise_error(Hypo::ContainerError, 'Component with name "instance" is not registered')
+      end
+    end
+
+    context 'a class' do
+      it 'removes component from container by name' do
+        container = Hypo::Container.new
+        container.register(TestType)
+        container.remove(:test_type)
+
+        expect {container.resolve(:test_type)}
+          .to raise_error(Hypo::ContainerError, 'Component with name "test_type" is not registered')
+      end
     end
   end
 end
