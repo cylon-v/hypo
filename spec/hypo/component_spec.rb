@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'hypo/component'
 require 'hypo/container'
-require 'hypo/life_cycle/singleton'
-require 'hypo/life_cycle/transient'
+require 'hypo/lifetime/singleton'
+require 'hypo/lifetime/transient'
 
 RSpec.describe Hypo::Component do
   before :all do
@@ -43,21 +43,39 @@ RSpec.describe Hypo::Component do
     end
   end
 
-  describe 'use_life_cycle' do
+  describe 'use_lifetime' do
     it 'sets requested life cycle' do
       component = Hypo::Component.new(TestType, @container)
 
-      expect(component.life_cycle).to be_an_instance_of Hypo::LifeCycle::Transient
-      component.use_life_cycle(:singleton)
-      expect(component.life_cycle).to be_an_instance_of Hypo::LifeCycle::Singleton
+      expect(component.lifetime).to be_an_instance_of Hypo::Lifetime::Transient
+      component.use_lifetime(:singleton)
+      expect(component.lifetime).to be_an_instance_of Hypo::Lifetime::Singleton
     end
   end
 
-  describe 'using_life_cycle' do
-    it 'is equal to use_life_cycle' do
+  describe 'using_lifetime' do
+    it 'is equal to use_lifetime' do
       component = Hypo::Component.new(TestType, @container)
-      expect(component.method(:using_life_cycle))
-        .to eq(component.method(:use_life_cycle))
+      expect(component.method(:using_lifetime))
+        .to eq(component.method(:use_lifetime))
+    end
+  end
+
+  describe 'bind_to' do
+    it 'binds an object' do
+      obj = Object.new
+      component = Hypo::Component.new(TestType, @container)
+      component.bind_to(obj)
+
+      expect(component.scope).to equal obj
+    end
+  end
+
+  describe 'bound_to' do
+    it 'is equal to bind_to' do
+      component = Hypo::Component.new(TestType, @container)
+      expect(component.method(:bound_to))
+        .to eq(component.method(:bind_to))
     end
   end
 end

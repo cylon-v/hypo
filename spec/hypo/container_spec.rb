@@ -70,16 +70,6 @@ RSpec.describe Hypo::Container do
       component = container.register(TestType)
       expect(component).to be_a Hypo::Component
     end
-
-    it 'should be chainable for component' do
-      class TestChain; end
-
-      container = Hypo::Container.new
-      component = container.register(TestType)
-        .register(TestChain)
-
-      expect(component).to be_a Hypo::Component
-    end
   end
 
   describe 'register_instance' do
@@ -188,27 +178,13 @@ RSpec.describe Hypo::Container do
     end
   end
 
-  describe 'remove' do
-    context 'an instance' do
-      it 'removes component from container by name' do
-        container = Hypo::Container.new
-        container.register_instance(TestType.new, :instance)
-        container.remove(:instance)
+  describe 'add_lifetime' do
+    it 'adds lifetime to the registry' do
+      my_lifetime = Object.new
+      container = Hypo::Container.new
+      container.add_lifetime(my_lifetime, :my_lifetime)
 
-        expect {container.resolve(:instance)}
-          .to raise_error(Hypo::ContainerError, 'Component with name "instance" is not registered')
-      end
-    end
-
-    context 'a class' do
-      it 'removes component from container by name' do
-        container = Hypo::Container.new
-        container.register(TestType)
-        container.remove(:test_type)
-
-        expect {container.resolve(:test_type)}
-          .to raise_error(Hypo::ContainerError, 'Component with name "test_type" is not registered')
-      end
+      expect(container.lifetimes[:my_lifetime]).to equal my_lifetime
     end
   end
 end

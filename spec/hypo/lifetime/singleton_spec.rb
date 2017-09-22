@@ -1,25 +1,25 @@
 require 'spec_helper'
 require 'hypo/component'
-require 'hypo/life_cycle/singleton'
+require 'hypo/lifetime/singleton'
 require 'stubs/test_type'
 
-RSpec.describe Hypo::LifeCycle::Singleton do
+RSpec.describe Hypo::Lifetime::Singleton do
   describe 'instance' do
     context 'simple case' do
       before :all do
         container = Hypo::Container.new
         @component = Hypo::Component.new(TestType, container)
-        @life_cycle = Hypo::LifeCycle::Singleton.new
+        @lifetime = Hypo::Lifetime::Singleton.new
       end
 
       it 'returns component instance' do
-        expect(@life_cycle.instance(@component)).to be_a TestType
+        expect(@lifetime.instance(@component)).to be_a TestType
       end
 
       context 'called twice' do
         it 'every time returns exactly the same instance' do
-          instance1 = @life_cycle.instance(@component)
-          instance2 = @life_cycle.instance(@component)
+          instance1 = @lifetime.instance(@component)
+          instance2 = @lifetime.instance(@component)
 
           expect(instance1).to equal instance2
         end
@@ -41,8 +41,8 @@ RSpec.describe Hypo::LifeCycle::Singleton do
           end
         end
 
-        container.register(TransientDependency).using_life_cycle(:transient)
-        singleton_component = container.register(SingletonComponent).using_life_cycle(:singleton)
+        container.register(TransientDependency).using_lifetime(:transient)
+        singleton_component = container.register(SingletonComponent).using_lifetime(:singleton)
 
         instance1 = singleton_component.instance.transient_dependency
         instance2 = singleton_component.instance.transient_dependency

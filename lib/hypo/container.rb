@@ -1,18 +1,18 @@
 require 'hypo/container_error'
 require 'hypo/component'
 require 'hypo/instance'
-require 'hypo/life_cycle/transient'
-require 'hypo/life_cycle/singleton'
+require 'hypo/lifetime/transient'
+require 'hypo/lifetime/singleton'
 
 module Hypo
   class Container
-    attr_reader :life_cycles
+    attr_reader :lifetimes
 
     def initialize
       @components = {}
-      @life_cycles = {}
-      add_life_cycle(LifeCycle::Transient.new, :transient)
-      add_life_cycle(LifeCycle::Singleton.new, :singleton)
+      @lifetimes = {}
+      add_lifetime(Lifetime::Transient.new, :transient)
+      add_lifetime(Lifetime::Singleton.new, :singleton)
       register_instance self, :container
     end
 
@@ -24,11 +24,11 @@ module Hypo
 
       component = Component.new(item, self, name)
 
-      if @components.key?(component.name)
-        raise ContainerError, "Component \"#{component.name}\" has already been registered"
+      unless @components.key?(component.name)
+        @components[component.name] = component
       end
 
-      @components[component.name] = component
+      @components[component.name]
     end
 
     def register_instance(item, name)
@@ -37,12 +37,12 @@ module Hypo
           'If you wanna register a type please use method "register".'
       end
 
-      if @components.key?(name)
-        raise ContainerError, "Component \"#{name}\" has already been registered"
+      unless @components.key?(name)
+        instance = Instance.new(item, self, name)
+        @components[name] = instance
       end
 
-      instance = Instance.new(item, self, name)
-      @components[name] = instance
+      @components[name]
     end
 
     def resolve(name)
@@ -53,12 +53,8 @@ module Hypo
       @components[name].instance
     end
 
-    def remove(name)
-      @components.delete(name)
-    end
-
-    def add_life_cycle(life_cycle, name)
-      @life_cycles[name] = life_cycle
+    def add_lifetime(lifetime, name)
+      @lifetimes[name] = lifetime
 
       self
     end

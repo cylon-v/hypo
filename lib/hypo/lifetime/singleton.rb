@@ -1,5 +1,5 @@
 module Hypo
-  module LifeCycle
+  module Lifetime
     class Singleton
       def initialize
         @instances = {}
@@ -7,7 +7,11 @@ module Hypo
 
       def instance(component)
         unless @instances.key? component.name
-          @instances[component.name] = component.type.new(*component.dependencies)
+          if component.respond_to? :type
+            @instances[component.name] = component.type.new(*component.dependencies)
+          else
+            @instances[component.name] = component.object
+          end
         end
 
         @instances[component.name]

@@ -1,8 +1,6 @@
 require 'spec_helper'
 require 'hypo/component'
 require 'hypo/container'
-require 'hypo/life_cycle/singleton'
-require 'hypo/life_cycle/transient'
 
 RSpec.describe Hypo::Instance do
   before :all do

@@ -62,7 +62,7 @@ and if you registered both of them, you can do:
   # user.company is resolved as well
 ```
 
-Sometimes you're not able to manage a type lifecycle, i.e. when you use 3rd-party static stuff, like:
+Sometimes you're not able to manage a type lifetime, i.e. when you use 3rd-party static stuff, like:
 ```ruby
 class DB
   def self.connect
@@ -75,21 +75,21 @@ In that case you can register an instance instead of a type:
 connection = DB.connect
 container.register_instance(connection, :connection)    
 ``` 
-## Component Life Cycle
-By default all registered components have life cycle Hypo::Transient (:transient). 
+## Component Lifetime
+By default all registered components have lifetime Hypo::Transient (:transient). 
 It means, every time when you resolve a component Hypo returns new instance of its type.
 If you wanna change this behavior then you can replace lifetime strategy. 
 Out of the box Hypo provides Hypo::Singleton (:singleton) strategy, you can use it when register a component:
 
 ```ruby
-container.register(User).using_life_cycle(:singleton)
+container.register(User).using_lifetime(:singleton)
 ``` 
-Actually you can implement your own life cycle, 
+Actually you can implement your own lifetime, 
 i.e. makes sense to think about HttpRequest strategy for your web applications.
 
-**Instances support only :singleton life cycle.** 
+**Instances support only :singleton lifetime.** 
 
-Sometimes you need to manage a component life cycle manually. Especially it can be useful for "instances".
+Sometimes you need to manage a component lifetime manually. Especially it can be useful for "instances".
 For example, you're going to inject new instance of request parameters every http request in your web application:
 
 ```ruby
@@ -104,8 +104,8 @@ container.remove(:query_string)
 # ...
 ```
 
-Hypo resolves components with different life cycle strategies independently. 
-In other words you can inject a dependency with less lifespan than acceptor type. I.e.:
+Hypo resolves components with different lifetime strategies independently. 
+In other words you can inject a dependency with less lifetime than acceptor type. I.e.:
 
 ```ruby
 class A; end
@@ -117,8 +117,8 @@ class B
 end
 
 
-container.register(A, :type_a).using_life_cycle(:transient)
-container.register(B, :type_b).using_life_cycle(:singleton)
+container.register(A, :type_a).using_lifetime(:transient)
+container.register(B, :type_b).using_lifetime(:singleton)
 
 ```
 

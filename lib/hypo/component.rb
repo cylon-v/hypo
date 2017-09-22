@@ -1,22 +1,19 @@
-require 'hypo/life_cycle/transient'
-require 'hypo/chainable'
+require 'hypo/lifetime/transient'
 
 module Hypo
   class Component
-    include Chainable
-
-    attr_reader :name, :type, :container, :life_cycle
+    attr_reader :name, :type, :container, :lifetime, :scope
 
     def initialize(type, container, name = nil)
       @container = container
       @type = type
       @name = name || type.name.gsub(/(.)([A-Z](?=[a-z]))/, '\1_\2').delete('::').downcase.to_sym
-      @life_cycle = container.life_cycles[:transient]
+      @lifetime = container.lifetimes[:transient]
       @dependency_names = @type.instance_method(:initialize).parameters.map {|p| p[1]}
     end
 
     def instance
-      instance = @life_cycle.instance(self)
+      instance = @lifetime.instance(self)
 
       @dependency_names.each do |dependency|
         instance.instance_variable_set "@#{dependency}".to_sym, @container.resolve(dependency)
@@ -29,12 +26,23 @@ module Hypo
       @dependency_names.map { |dependency| @container.resolve(dependency) }
     end
 
-    def use_life_cycle(life_cycle)
-      @life_cycle = container.life_cycles[life_cycle]
+    def use_lifetime(lifetime)
+      @lifetime = @container.lifetimes[lifetime]
 
       self
     end
 
-    alias using_life_cycle use_life_cycle
+    def bind_to(scope)
+      if scope.is_a? Symbol
+        @scope = @container.resolve(scope)
+      else
+        @scope = scope
+      end
+
+      self
+    end
+
+    alias using_lifetime use_lifetime
+    alias bound_to bind_to
   end
 end
