@@ -28,19 +28,6 @@ RSpec.describe Hypo::Container do
       end
     end
 
-    context 'when component has already been registered' do
-      before :each do
-        @container = Hypo::Container.new
-        @container.register(TestType)
-      end
-
-      it 'raises ContainerError with specific message' do
-        message = 'Component "test_type" has already been registered'
-        expect {@container.register(TestType)}
-          .to raise_error(Hypo::ContainerError, message)
-      end
-    end
-
     context 'when register a component of the same type with different name' do
       before :each do
         @container = Hypo::Container.new
@@ -77,26 +64,10 @@ RSpec.describe Hypo::Container do
       @container = Hypo::Container.new
     end
 
-    context 'when instance has not been registered' do
-      it 'registers component and can resolve it by name' do
-        @container.register_instance(TestType.new, :my_object)
-        instance = @container.resolve(:my_object)
-        expect(instance).to be_a TestType
-      end
-    end
-
-
-    context 'when component has already been registered' do
-      before :each do
-        @container = Hypo::Container.new
-        @container.register_instance(TestType.new, :my_object)
-      end
-
-      it 'raises ContainerError with specific message' do
-        message = 'Component "my_object" has already been registered'
-        expect {@container.register_instance(TestType.new, :my_object)}
-          .to raise_error(Hypo::ContainerError, message)
-      end
+    it 'registers component and can resolve it by name' do
+      @container.register_instance(TestType.new, :my_object)
+      instance = @container.resolve(:my_object)
+      expect(instance).to be_a TestType
     end
 
     context 'by passing a class instead of an instance' do
