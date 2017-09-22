@@ -76,16 +76,41 @@ connection = DB.connect
 container.register_instance(connection, :connection)    
 ``` 
 ## Component Lifetime
-By default all registered components have lifetime Hypo::Transient (:transient). 
+By default all registered components have lifetime Hypo::Lifetime::Transient (:transient). 
 It means, every time when you resolve a component Hypo returns new instance of its type.
 If you wanna change this behavior then you can replace lifetime strategy. 
-Out of the box Hypo provides Hypo::Singleton (:singleton) strategy, you can use it when register a component:
+Out of the box Hypo provides Hypo::Lifetime::Singleton (:singleton) strategy, you can use it when register a component:
 
 ```ruby
 container.register(User).using_lifetime(:singleton)
 ``` 
+
 Actually you can implement your own lifetime, 
-i.e. makes sense to think about HttpRequest strategy for your web applications.
+i.e. makes sense to think about HttpRequest strategy for your web applications. You can do that using "add_lifetime" method:
+
+```ruby
+# somewhere in Rack application: application initialization
+lifetime = Lifetime::Request.new
+container.add_lifetime(lifetime, :request)
+```
+
+A class of new lifetime must respond to "instance" method. This method just a factory method which creates new instance according to your strategy. For example, Lifetime::Request could cache instanes of a components during http request lifespan. Take a look to [:singleton implementation](https://github.com/cylon-v/hypo/blob/master/lib/hypo/lifetime/singleton.rb). You can manually purge internal state of components registry according your strategy. In case of http-request lifetime you could clean up it right after request has done:
+
+```ruby
+# somewhere in Rack application: application initialization
+# ...
+container.register(SQLTransation, :transaction)
+```
+
+```ruby
+# somewhere in Rack application: request handling
+container.register_instance(query_string, :query_string)
+
+# handle the request
+# ...
+
+lifetime.purge
+```
 
 **Instances support only :singleton lifetime.** 
 
@@ -93,19 +118,20 @@ Sometimes you need to manage a component lifetime manually. Especially it can be
 For example, you're going to inject new instance of request parameters every http request in your web application:
 
 ```ruby
-# somewhere in Rack application
+# somewhere in Rack application: request handling
 # ...
 query_string = env['QUERY_STRING']
 container.register_instance(query_string, :query_string)
 
 # handle the request
+# ...
 
 container.remove(:query_string)
 # ...
 ```
 
 Hypo resolves components with different lifetime strategies independently. 
-In other words you can inject a dependency with less lifetime than acceptor type. I.e.:
+In other words you can inject a dependency with less lifespan than acceptor type. I.e.:
 
 ```ruby
 class A; end
@@ -120,6 +146,7 @@ end
 container.register(A, :type_a).using_lifetime(:transient)
 container.register(B, :type_b).using_lifetime(:singleton)
 
+container.resolve(:type_b)
 ```
 
 According to :transient strategy every time when you try to resolve a singleton 
