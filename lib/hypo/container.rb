@@ -3,6 +3,7 @@ require 'hypo/component'
 require 'hypo/instance'
 require 'hypo/lifetime/transient'
 require 'hypo/lifetime/singleton'
+require 'hypo/lifetime/scope'
 
 module Hypo
   class Container

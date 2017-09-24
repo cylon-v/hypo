@@ -142,8 +142,19 @@ lifetime.purge
 
 #### Lifetime :scope
 For most of cases when you need to bind dependency lifetime to lifetime of another item of your application
-you can use Hypo::Lifetime::Scope (:scope) strategy.
+you can use Hypo::Lifetime::Scope (:scope) strategy. In order to to that first of all you should implement a scope:
 
+```ruby
+class Request
+  include Hypo::Scope
+    
+  def handle
+    # do something
+    release
+    # return a result
+  end
+end
+``` 
 
 ```ruby
 # somewhere in Rack application: application initialization
@@ -159,13 +170,26 @@ container
 container
     .register_instance(request, :request)
     .using_lifetime(:scope)
-    .bound_to(request) # an object
+    .bound_to(request) # the scope!
 
-# handle the request
-# ...
-
-lifetime.purge(request)
+request.handle
 ``` 
+
+
+:scope lifetime supports a finalizing for its objects. Class with such ability should respond to "finalize" method:
+
+```ruby
+class SQLTransation
+  def initialize
+    @transaction = DB.begin_transaction
+  end
+  
+  def finalize
+    @transaction.commit
+  end
+end
+```
+Method "finalize" calls on scope releasing (Hypo::Scope#release).
 
 ### Remove components
 Sometimes you need to manage a component lifetime manually. Especially it can be useful for "instances".

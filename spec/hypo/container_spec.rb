@@ -41,7 +41,7 @@ RSpec.describe Hypo::Container do
     end
 
     context 'when register component as instance of an object' do
-      it 'raises an exception with specific message' do
+      it 'raises an error with specific message' do
         @container = Hypo::Container.new
 
         message = 'Using method "register" you can register only a type. ' \

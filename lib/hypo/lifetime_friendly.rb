@@ -1,7 +1,11 @@
 module Hypo
   module LifetimeFriendly
-    def use_lifetime(lifetime)
-      @lifetime = @container.lifetimes[lifetime]
+    def use_lifetime(name)
+      unless @container.lifetimes.key? name
+        raise ContainerError, "Lifetime with name \"#{name}\" is not registered"
+      end
+
+      @lifetime = @container.lifetimes[name]
 
       self
     end

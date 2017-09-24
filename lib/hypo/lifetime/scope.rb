@@ -6,11 +6,6 @@ module Hypo
       end
 
       def instance(component)
-        if component.scope.nil?
-          raise ContainerError, "Component \"#{component.name}\" must be bound to a scope" \
-            " according to Hupo::Lifetime::Scope lifetime strategy"
-        end
-
         scope = component.scope.object_id
         @instances[scope] = {} unless @instances.key? scope
 
@@ -26,6 +21,10 @@ module Hypo
       end
 
       def purge(scope)
+        @instances[scope.object_id].each_value do |instance|
+          instance.finalize if instance.respond_to? :finalize
+        end
+
         @instances.delete scope.object_id
       end
     end

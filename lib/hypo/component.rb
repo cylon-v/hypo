@@ -7,7 +7,7 @@ module Hypo
     include ScopeFriendly
     include LifetimeFriendly
 
-    attr_reader :name, :type, :container, :lifetime, :scope
+    attr_reader :name, :type, :container, :lifetime
 
     def initialize(type, container, name = nil)
       @container = container

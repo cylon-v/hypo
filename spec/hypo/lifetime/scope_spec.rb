@@ -2,11 +2,12 @@ require 'spec_helper'
 require 'hypo/component'
 require 'hypo/lifetime/scope'
 require 'stubs/test_type'
+require 'stubs/test_scope'
 
 RSpec.describe Hypo::Lifetime::Scope do
   before :all do
     @container = Hypo::Container.new
-    @scope = Object.new
+    @scope = TestScope.new
     @component = Hypo::Component.new(TestType, @container)
     @component.bind_to(@scope)
     @lifetime = Hypo::Lifetime::Scope.new
@@ -28,7 +29,7 @@ RSpec.describe Hypo::Lifetime::Scope do
 
     context 'the same component from different scopes' do
       it 'returns different instance' do
-        another_scope = Object.new
+        another_scope = TestScope.new
         component_clone = Hypo::Component.new(TestType, @container)
         component_clone.bind_to(another_scope)
 
@@ -54,7 +55,7 @@ RSpec.describe Hypo::Lifetime::Scope do
         component_without_scope = Hypo::Component.new(TestType, @container)
 
         message = 'Component "test_type" must be bound to a scope' \
-            ' according to Hupo::Lifetime::Scope lifetime strategy'
+            ' according to Hypo::Lifetime::Scope lifetime strategy'
 
         expect {@lifetime.instance(component_without_scope)}
           .to raise_error(Hypo::ContainerError, message)
@@ -65,7 +66,7 @@ RSpec.describe Hypo::Lifetime::Scope do
       it 'returns just registered instance of object' do
         obj = Object.new
         component = Hypo::Instance.new(obj, @container, :my_obj)
-        component.bind_to(Object.new)
+        component.bind_to(TestScope.new)
         instance = @lifetime.instance(component)
 
         expect(instance).to equal obj
