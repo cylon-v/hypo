@@ -1,5 +1,11 @@
+require 'hypo/scope_friendly'
+require 'hypo/lifetime_friendly'
+
 module Hypo
   class Instance
+    include ScopeFriendly
+    include LifetimeFriendly
+
     attr_reader :name, :container, :scope, :object
 
     def initialize(object, container, name)
@@ -14,24 +20,5 @@ module Hypo
     def instance
       @lifetime.instance(self)
     end
-
-    def use_lifetime(lifetime)
-      @lifetime = @container.lifetimes[lifetime]
-
-      self
-    end
-
-    def bind_to(scope)
-      if scope.is_a? Symbol
-        @scope = @container.resolve(scope)
-      else
-        @scope = scope
-      end
-
-      self
-    end
-
-    alias using_lifetime use_lifetime
-    alias bound_to bind_to
   end
 end

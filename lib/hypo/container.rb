@@ -13,6 +13,7 @@ module Hypo
       @lifetimes = {}
       add_lifetime(Lifetime::Transient.new, :transient)
       add_lifetime(Lifetime::Singleton.new, :singleton)
+      add_lifetime(Lifetime::Scope.new, :scope)
       register_instance self, :container
     end
 

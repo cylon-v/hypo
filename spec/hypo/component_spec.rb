@@ -62,12 +62,25 @@ RSpec.describe Hypo::Component do
   end
 
   describe 'bind_to' do
-    it 'binds an object' do
-      obj = Object.new
-      component = Hypo::Component.new(TestType, @container)
-      component.bind_to(obj)
+    context 'when scope is an object' do
+      it 'binds an object' do
+        obj = Object.new
+        component = Hypo::Component.new(TestType, @container)
+        component.bind_to(obj)
 
-      expect(component.scope).to equal obj
+        expect(component.scope).to equal obj
+      end
+    end
+
+    context 'when scope is a symbol' do
+      it 'binds to object registered in container' do
+        obj = Object.new
+        @container.register_instance(obj, :my_scope)
+        component = Hypo::Component.new(TestType, @container)
+        component.bind_to(:my_scope)
+
+        expect(component.scope).to equal obj
+      end
     end
   end
 

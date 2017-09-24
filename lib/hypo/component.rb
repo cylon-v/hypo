@@ -1,7 +1,12 @@
 require 'hypo/lifetime/transient'
+require 'hypo/scope_friendly'
+require 'hypo/lifetime_friendly'
 
 module Hypo
   class Component
+    include ScopeFriendly
+    include LifetimeFriendly
+
     attr_reader :name, :type, :container, :lifetime, :scope
 
     def initialize(type, container, name = nil)
@@ -25,24 +30,5 @@ module Hypo
     def dependencies
       @dependency_names.map { |dependency| @container.resolve(dependency) }
     end
-
-    def use_lifetime(lifetime)
-      @lifetime = @container.lifetimes[lifetime]
-
-      self
-    end
-
-    def bind_to(scope)
-      if scope.is_a? Symbol
-        @scope = @container.resolve(scope)
-      else
-        @scope = scope
-      end
-
-      self
-    end
-
-    alias using_lifetime use_lifetime
-    alias bound_to bind_to
   end
 end

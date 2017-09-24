@@ -7,8 +7,8 @@ RSpec.describe Hypo::Lifetime::Singleton do
   describe 'instance' do
     context 'simple case' do
       before :all do
-        container = Hypo::Container.new
-        @component = Hypo::Component.new(TestType, container)
+        @container = Hypo::Container.new
+        @component = Hypo::Component.new(TestType, @container)
         @lifetime = Hypo::Lifetime::Singleton.new
       end
 
@@ -22,6 +22,16 @@ RSpec.describe Hypo::Lifetime::Singleton do
           instance2 = @lifetime.instance(@component)
 
           expect(instance1).to equal instance2
+        end
+      end
+
+      context 'when trying to get instance of an instance first time' do
+        it 'returns just registered instance of object' do
+          obj = Object.new
+          component = Hypo::Instance.new(obj, @container, :my_obj)
+          instance = @lifetime.instance(component)
+
+          expect(instance).to equal obj
         end
       end
     end
