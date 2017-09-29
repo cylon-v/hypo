@@ -191,23 +191,6 @@ end
 ```
 Method "finalize" calls on scope releasing (Hypo::Scope#release).
 
-### Remove components
-Sometimes you need to manage a component lifetime manually. Especially it can be useful for "instances".
-For example, you're going to inject new instance of request parameters every http request in your web application:
-
-```ruby
-# somewhere in Rack application: request handling
-# ...
-query_string = env['QUERY_STRING']
-container.register_instance(query_string, :query_string)
-
-# handle the request
-# ...
-
-container.remove(:query_string)
-# ...
-```
-
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
