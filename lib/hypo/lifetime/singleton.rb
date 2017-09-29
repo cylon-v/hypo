@@ -2,15 +2,15 @@ module Hypo
   module Lifetime
     class Singleton
       def initialize
-        @instances = {}
+        @instances = Hash.new
+        @mutex = Mutex.new
       end
 
       def instance(component)
-        unless @instances.key? component.name
-          if component.respond_to? :type
-            @instances[component.name] = component.type.new(*component.dependencies)
-          else
-            @instances[component.name] = component.object
+        @mutex.synchronize do
+          unless @instances.key? component.name
+            instance = component.respond_to?(:type) ? component.type.new(*component.dependencies) : component.object
+            @instances[component.name] = instance
           end
         end
 

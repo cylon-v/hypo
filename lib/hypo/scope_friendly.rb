@@ -5,6 +5,7 @@ module Hypo
         @scope_name = scope
       else
         @scope = scope
+        @scope.instance_variable_set('@instances'.freeze, Hash.new)
       end
 
       self

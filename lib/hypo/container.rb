@@ -12,6 +12,8 @@ module Hypo
     def initialize
       @components = {}
       @lifetimes = {}
+      @mutex = Mutex.new
+
       add_lifetime(Lifetime::Transient.new, :transient)
       add_lifetime(Lifetime::Singleton.new, :singleton)
       add_lifetime(Lifetime::Scope.new, :scope)
@@ -26,8 +28,10 @@ module Hypo
 
       component = Component.new(item, self, name)
 
-      unless @components.key?(component.name)
-        @components[component.name] = component
+      @mutex.synchronize do
+        unless @components.key?(component.name)
+          @components[component.name] = component
+        end
       end
 
       @components[component.name]
@@ -39,9 +43,11 @@ module Hypo
           'If you wanna register a type please use method "register".'
       end
 
-      unless @components.key?(name)
-        instance = Instance.new(item, self, name)
-        @components[name] = instance
+      @mutex.synchronize do
+        unless @components.key?(name)
+          instance = Instance.new(item, self, name)
+          @components[name] = instance
+        end
       end
 
       @components[name]
