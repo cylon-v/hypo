@@ -6,6 +6,7 @@ module Hypo
       end
 
       @lifetime = @container.lifetimes[name]
+      @lifetime.preload(self) if @lifetime.respond_to? :preload
 
       self
     end

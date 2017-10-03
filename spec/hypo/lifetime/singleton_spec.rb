@@ -10,6 +10,7 @@ RSpec.describe Hypo::Lifetime::Singleton do
         @container = Hypo::Container.new
         @component = Hypo::Component.new(TestType, @container)
         @lifetime = Hypo::Lifetime::Singleton.new
+        @lifetime.preload(@component)
       end
 
       it 'returns component instance' do
@@ -29,6 +30,7 @@ RSpec.describe Hypo::Lifetime::Singleton do
         it 'returns just registered instance of object' do
           obj = Object.new
           component = Hypo::Instance.new(obj, @container, :my_obj)
+          @lifetime.preload(component)
           instance = @lifetime.instance(component)
 
           expect(instance).to equal obj
