@@ -6,7 +6,7 @@ module Hypo
     include ScopeFriendly
     include LifetimeFriendly
 
-    attr_reader :name, :container, :scope, :object
+    attr_reader :name, :container, :object
 
     def initialize(object, container, name)
       raise ContainerError, 'Registered object should have a name' if name.nil?

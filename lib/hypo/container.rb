@@ -29,9 +29,7 @@ module Hypo
       component = Component.new(item, self, name)
 
       @mutex.synchronize do
-        unless @components.key?(component.name)
-          @components[component.name] = component
-        end
+        @components[component.name] = component
       end
 
       @components[component.name]
@@ -44,10 +42,8 @@ module Hypo
       end
 
       @mutex.synchronize do
-        unless @components.key?(name)
-          instance = Instance.new(item, self, name)
-          @components[name] = instance
-        end
+        instance = Instance.new(item, self, name)
+        @components[name] = instance
       end
 
       @components[name]
