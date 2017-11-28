@@ -7,16 +7,16 @@ module Hypo
       end
 
       def instance(component)
-        unless @instances.key? component.name
-          @mutex.synchronize do
-            unless @instances.key? component.name
-              instance = component.respond_to?(:type) ? component.type.new(*component.dependencies) : component.object
-              @instances[component.name] = instance
-            end
+        @instances[component.name]
+      end
+
+      def preload(component)
+        @mutex.synchronize do
+          unless @instances.key? component.name
+            instance = component.respond_to?(:type) ? component.type.new(*component.dependencies) : component.object
+            @instances[component.name] = instance
           end
         end
-
-        @instances[component.name]
       end
     end
   end
