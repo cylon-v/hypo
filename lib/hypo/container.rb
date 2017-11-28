@@ -36,11 +36,6 @@ module Hypo
     end
 
     def register_instance(item, name)
-      if item.is_a?(Class)
-        raise ContainerError, 'Using method "register_instance" you can register only an instance. ' \
-          'If you wanna register a type please use method "register".'
-      end
-
       @mutex.synchronize do
         instance = Instance.new(item, self, name)
         @components[name] = instance
