@@ -65,21 +65,9 @@ RSpec.describe Hypo::Container do
     end
 
     it 'registers component and can resolve it by name' do
-      @container.register_instance(TestType.new, :my_object)
+      @container.register_instance('Hello', :my_object)
       instance = @container.resolve(:my_object)
-      expect(instance).to be_a TestType
-    end
-
-    context 'by passing a class instead of an instance' do
-      it 'raises an exception with specific message' do
-        @container = Hypo::Container.new
-
-        message = 'Using method "register_instance" you can register only an instance. ' \
-          'If you wanna register a type please use method "register".'
-
-        expect {@container.register_instance(TestType, :my_type)}
-          .to raise_error(Hypo::ContainerError, message)
-      end
+      expect(instance).to eql 'Hello'
     end
   end
 
