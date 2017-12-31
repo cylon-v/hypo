@@ -7,7 +7,7 @@ require 'hypo/lifetime/scope'
 
 module Hypo
   class Container
-    attr_reader :lifetimes
+    attr_reader :lifetimes, :components
 
     def initialize
       @components = {}
