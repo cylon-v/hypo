@@ -36,6 +36,10 @@ module Hypo
     end
 
     def register_instance(item, name)
+      if %w(attrs attributes).include? name
+        raise ContainerError, "Name \"#{name}\" is reserved by Hypo container please use another variant."
+      end
+
       @mutex.synchronize do
         instance = Instance.new(item, self, name)
         @components[name] = instance
@@ -45,11 +49,15 @@ module Hypo
     end
 
     def resolve(name)
-      unless @components.key?(name)
-        raise ContainerError, "Component with name \"#{name}\" is not registered"
-      end
+      if %w(attrs attributes).include? name
+        {}
+      else
+        unless @components.key?(name)
+          raise ContainerError, "Component with name \"#{name}\" is not registered"
+        end
 
-      @components[name].instance
+        @components[name].instance
+      end
     end
 
     def add_lifetime(lifetime, name)
