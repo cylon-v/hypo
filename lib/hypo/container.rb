@@ -49,7 +49,7 @@ module Hypo
     end
 
     def resolve(name)
-      if %w(attrs attributes).include? name
+      if [:attrs, :attributes].include? name
         {}
       else
         unless @components.key?(name)
