@@ -1,4 +1,4 @@
-# Hypo ![Build Status](https://travis-ci.org/cylon-v/hypo.svg)
+# Hypo ![Build Status](https://travis-ci.org/cylon-v/hypo.svg?branch=master)
 Hypo is sinless general purpose IoC container for Ruby applications.
 
 ## Installation
