@@ -14,11 +14,13 @@ module Hypo
       @type = type
       @name = name || type.name.gsub(/(.)([A-Z](?=[a-z]))/, '\1_\2').delete('::').downcase.to_sym
       @lifetime = container.lifetimes[:transient]
-      @dependency_names = @type.instance_method(:initialize).parameters.map {|p| p[1]}
+      @dependency_names = @type.instance_method(:initialize).parameters
+                            .map{|p| p[1]}
+                            .select{|name| ![:attrs, :attributes].include?(name)}
     end
 
-    def instance
-      instance = @lifetime.instance(self)
+    def instance(attrs = {})
+      instance = @lifetime.instance(self, attrs)
 
       @dependency_names.each do |dependency|
         instance.instance_variable_set "@#{dependency}".to_sym, @container.resolve(dependency)

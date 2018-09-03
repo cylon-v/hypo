@@ -1,9 +1,11 @@
 module Hypo
   module Lifetime
     class Transient
-      def instance(component)
+      def instance(component, attrs = nil)
         if component.respond_to? :type
-          component.type.new(*component.dependencies)
+          dependencies = attrs ? [attrs].concat(component.dependencies) : component.dependencies
+          p dependencies
+          component.type.new(*dependencies)
         else
           component.object
         end

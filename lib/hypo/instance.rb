@@ -17,7 +17,7 @@ module Hypo
       @name = name
     end
 
-    def instance
+    def instance(attrs = nil)
       @lifetime.instance(self)
     end
   end

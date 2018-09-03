@@ -6,7 +6,7 @@ module Hypo
         @mutex = Mutex.new
       end
 
-      def instance(component)
+      def instance(component, attrs = nil)
         @instances[component.name]
       end
 

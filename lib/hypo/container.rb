@@ -48,15 +48,14 @@ module Hypo
       @components[name]
     end
 
-    def resolve(name)
+    def resolve(name, attrs = nil)
       if [:attrs, :attributes].include? name
-        {}
       else
         unless @components.key?(name)
           raise ContainerError, "Component with name \"#{name}\" is not registered"
         end
 
-        @components[name].instance
+        @components[name].instance(attrs)
       end
     end
 
