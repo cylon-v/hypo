@@ -7,11 +7,13 @@ module Hypo
     end
 
     def purge
-      @instances.each_value do |instance|
-        instance.finalize if instance.respond_to? :finalize
+      begin
+        @instances.each_value do |instance|
+          instance.finalize if instance.respond_to? :finalize
+        end
+      ensure
+        @instances = Hash.new
       end
-
-      @instances = Hash.new
     end
   end
 end

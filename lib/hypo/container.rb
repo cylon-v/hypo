@@ -1,4 +1,5 @@
 require 'hypo/container_error'
+require 'hypo/missing_component_error'
 require 'hypo/component'
 require 'hypo/instance'
 require 'hypo/lifetime/transient'
@@ -52,7 +53,7 @@ module Hypo
       if [:attrs, :attributes].include? name
       else
         unless @components.key?(name)
-          raise ContainerError, "Component with name \"#{name}\" is not registered"
+          raise MissingComponentError.new(name)
         end
 
         @components[name].instance(attrs)
@@ -63,6 +64,10 @@ module Hypo
       @lifetimes[name] = lifetime
 
       self
+    end
+
+    def show(component_name)
+      @components[component_name]
     end
   end
 end
