@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'stubs/test_type'
-require 'hypo/errors/container_error'
+require 'hypo/container_error'
 
 RSpec.describe Hypo::Container do
   describe 'register' do
